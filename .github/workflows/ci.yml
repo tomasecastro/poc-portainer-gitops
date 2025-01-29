@@ -10,9 +10,9 @@ jobs:
       matrix:
         include:
           - app: nodejs
-            context: ./app/nodejs/Dockerfile
+            context: ./app/nodejs/
           - app: php
-            context: ./app/php/Dockerfile
+            context: ./app/php/
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
@@ -31,8 +31,8 @@ jobs:
       - name: Build and push ${{ matrix.app }}
         uses: docker/build-push-action@v5
         with:
-          file: ${{ matrix.context }}
-          context: .
+          file: ${{ matrix.context }}/Dockerfile
+          context: ${{ matrix.context }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}-${{  github.sha }}-${{ matrix.app }}
           labels: ${{ steps.meta.outputs.labels }}l
