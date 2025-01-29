@@ -1,0 +1,14 @@
+{
+    "require": {
+      "slim/slim": "^4.10",
+      "monolog/monolog": "^2.9",
+      "promphp/prometheus_client_php": "^2.0",
+      "nyholm/psr7": "^1.5",
+      "slim/psr7": "^1.5"
+    },
+    "autoload": {
+      "psr-4": {
+        "App\\": "src/"
+      }
+    }
+}
