@@ -10,9 +10,9 @@ jobs:
       matrix:
         include:
           - app: nodejs
-            context: app/nodejs/Dockerfile
+            context: ./app/nodejs/
           - app: php
-            context: app/nodejs/Dockerfile
+            context: ./app/php/
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
