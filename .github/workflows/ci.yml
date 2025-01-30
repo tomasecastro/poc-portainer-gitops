@@ -1,0 +1,44 @@
+name: Node.js CI
+on: [push]
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      attestations: write
+      id-token: write
+    strategy:
+      matrix:
+        include:
+          - app: nodejs
+            context: ./app/nodejs/
+          - app: php
+            context: ./app/php/
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Build and push ${{ matrix.app }}
+        uses: docker/build-push-action@v5
+        with:
+          file: ${{ matrix.context }}/Dockerfile
+          context: ${{ matrix.context }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}-${{  github.sha }}-${{ matrix.app }}
+          labels: ${{ steps.meta.outputs.labels }}l
